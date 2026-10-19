@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+#nextButton {
+  background-color: rgb(134, 133, 141);
+  color: white;
+}
+
+#nextButton:disabled {
+  background-color: gray;
+  color: darkgray;
+  cursor: not-allowed;
+}
