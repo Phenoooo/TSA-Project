@@ -3,51 +3,34 @@ import { useState } from "react";
 
 interface QuestionProps {
   question: string;
-  index: number;
-  setIndex: React.Dispatch<React.SetStateAction<number>>;
+  isLast: boolean;
+  disabled?: boolean;
+  onSubmit: (work: string) => void;
 }
-export const questions: string[] = [];
-export const answers: string[] = [];
 
-function Question(props: QuestionProps) {
-  const [enoughWordsTypes, setWordsTyped] = useState(false);
+function Question({ question, isLast, disabled, onSubmit }: QuestionProps) {
+  const [work, setWork] = useState("");
+  const enoughWritten = work.trim().length >= 20;
+
   return (
     <div>
-      <h1>{props.question}</h1>
+      <h1>{question}</h1>
       <textarea
         maxLength={1000}
         placeholder="Show your work here..."
         rows={8}
-        id="textArea"
-        onChange={() => {
-          const textArea = document.getElementById(
-            "textArea",
-          ) as HTMLTextAreaElement;
-          if (textArea.value.length >= 20) {
-            setWordsTyped(true);
-          } else {
-            setWordsTyped(false);
-          }
-        }}
-      ></textarea>
-
-      <br></br>
-
+        value={work}
+        onChange={(e) => setWork(e.target.value)}
+      />
+      <br />
       <button
-        id="nextButton"
+        disabled={!enoughWritten || disabled}
         onClick={() => {
-          const textArea = document.getElementById(
-            "textArea",
-          ) as HTMLTextAreaElement;
-          answers.push(textArea.value);
-          questions.push(props.question);
-          props.setIndex(props.index + 1);
-
-          textArea.value = "";
-          setWordsTyped(false);
+          onSubmit(work);
+          setWork("");
         }}
       >
-        next
+        {isLast ? "submit" : "next"}
       </button>
     </div>
   );
