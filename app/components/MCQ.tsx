@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { calculateTotal } from "../data/questionEngine";
+
 import CalculateAnswers from "../data/questionEngine";
 import React from "react";
 
@@ -8,14 +8,12 @@ interface QuestionProps {
   question: string;
   answers: string[];
   index: number;
-
   diagnosis: {
     A: string;
     B: string;
     C: string;
     D: string;
   };
-
   difficulty: number;
 
   setIndex: React.Dispatch<React.SetStateAction<number>>;
@@ -24,6 +22,7 @@ interface QuestionProps {
 function Question(props: QuestionProps) {
   const [selected, setSelected] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState("");
+  let answer = "";
 
   return (
     <div>
@@ -100,15 +99,19 @@ function Question(props: QuestionProps) {
           const answerC = document.getElementById("q1C") as HTMLInputElement;
           const answerD = document.getElementById("q1D") as HTMLInputElement;
 
-          props.setIndex(props.index + 1);
-          calculateTotal(props.diagnosis);
+          if (selectedAnswer == "A") {
+            answer = props.diagnosis.A;
+          } else if (selectedAnswer == "B") {
+            answer = props.diagnosis.B;
+          } else if (selectedAnswer == "C") {
+            answer = props.diagnosis.C;
+          } else if (selectedAnswer == "D") {
+            answer = props.diagnosis.D;
+          }
 
-          CalculateAnswers(selectedAnswer, props.difficulty, {
-            A: props.diagnosis.A,
-            B: props.diagnosis.B,
-            C: props.diagnosis.C,
-            D: props.diagnosis.D,
-          });
+          props.setIndex(props.index + 1);
+
+          CalculateAnswers(props.difficulty, answer);
 
           if (answerA.checked) {
             answerA.checked = false;
@@ -120,6 +123,7 @@ function Question(props: QuestionProps) {
             answerD.checked = false;
           }
           setSelected(false);
+          answer = "";
         }}
       >
         next
