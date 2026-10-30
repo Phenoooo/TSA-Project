@@ -1,267 +1,123 @@
-let correct = 0;
-let sign_error = 0;
-let operation_error = 0;
-let variable_isolation_error = 0;
-let distribution_error = 0;
-let exponent_rule_error = 0;
-let formula_error = 0;
-let graph_interpretation_error = 0;
+// correct, sign, operation, varaible isolation, distribution, exponent, formula, graph interpretation
 
-let correctTotal = 0;
-let sign_errorTotal = 0;
-let operation_errorTotal = 0;
-let variable_isolation_errorTotal = 0;
-let distribution_errorTotal = 0;
-let exponent_rule_errorTotal = 0;
-let formula_errorTotal = 0;
-let graph_interpretation_errorTotal = 0;
+let answerCalculationData = [0, 0, 0, 0, 0, 0, 0, 0];
 
-let sign_errorDifficulty = 1;
-let operation_errorDifficulty = 1;
-let variable_isolation_errorDifficulty = 1;
-let distribution_errorDifficulty = 1;
-let exponent_rule_errorDifficulty = 1;
-let formula_errorDifficulty = 1;
-let graph_interpretation_errorDifficulty = 1;
+let answerTotalData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+let answerDifficultyData = [1, 1, 1, 1, 1, 1, 1];
+
+//Make a class that is used to create objects for the questions
+//Do this later Hari Singh
 
 function CalculateAnswers(
-  selectedAnswer: string,
   difficulty: number,
-  diagnosis: { A: string; B: string; C: string; D: string },
+
+  item: string,
 ) {
-  if (selectedAnswer == "B") {
-    {
-      if (diagnosis.B === "correct") {
-        correct++;
-      } else if (diagnosis.B == "sign_error") {
-        sign_error++;
-        if (sign_error > 0) {
-          sign_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.B == "operation_error") {
-        operation_error++;
-        if (operation_error > 0) {
-          operation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.B == "variable_isolation_error") {
-        variable_isolation_error++;
-        if (variable_isolation_error > 0) {
-          variable_isolation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.B == "distribution_error") {
-        distribution_error++;
-        if (distribution_error > 0) {
-          distribution_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.B == "exponent_rule_error") {
-        exponent_rule_error++;
-        if (exponent_rule_error > 0) {
-          exponent_rule_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.B == "formula_error") {
-        formula_error++;
-        if (formula_error > 0) {
-          formula_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.B == "graph_interpretation_error") {
-        graph_interpretation_error++;
-        if (graph_interpretation_error > 0) {
-          graph_interpretation_errorDifficulty *= difficulty;
-        }
-      }
-    }
+  if (item == "correct") {
+    answerCalculationData[0]++;
   }
-  if (selectedAnswer == "C") {
-    {
-      if (diagnosis.C === "correct") {
-        correct++;
-      } else if (diagnosis.C == "sign_error") {
-        sign_error++;
-        if (sign_error > 0) {
-          sign_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.C == "operation_error") {
-        operation_error++;
-        if (operation_error > 0) {
-          operation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.C == "variable_isolation_error") {
-        variable_isolation_error++;
-        if (variable_isolation_error > 0) {
-          variable_isolation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.C == "distribution_error") {
-        distribution_error++;
-        if (distribution_error > 0) {
-          distribution_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.C == "exponent_rule_error") {
-        exponent_rule_error++;
-        if (exponent_rule_error > 0) {
-          exponent_rule_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.C == "formula_error") {
-        formula_error++;
-        if (formula_error > 0) {
-          formula_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.C == "graph_interpretation_error") {
-        graph_interpretation_error++;
-        if (graph_interpretation_error > 0) {
-          graph_interpretation_errorDifficulty *= difficulty;
-        }
-      }
-    }
+  if (item == "sign_error") {
+    answerCalculationData[1]++;
+    answerDifficultyData[1] /= difficulty;
   }
-  if (selectedAnswer == "A") {
-    {
-      if (diagnosis.A === "correct") {
-        correct++;
-      } else if (diagnosis.A == "sign_error") {
-        sign_error++;
-        if (sign_error > 0) {
-          sign_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.A == "operation_error") {
-        operation_error++;
-        if (operation_error > 0) {
-          operation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.A == "variable_isolation_error") {
-        variable_isolation_error++;
-        if (variable_isolation_error > 0) {
-          variable_isolation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.A == "distribution_error") {
-        distribution_error++;
-        if (distribution_error > 0) {
-          distribution_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.A == "exponent_rule_error") {
-        exponent_rule_error++;
-        if (exponent_rule_error > 0) {
-          exponent_rule_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.A == "formula_error") {
-        formula_error++;
-        if (formula_error > 0) {
-          formula_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.A == "graph_interpretation_error") {
-        graph_interpretation_error++;
-        if (graph_interpretation_error > 0) {
-          graph_interpretation_errorDifficulty *= difficulty;
-        }
-      }
-    }
+  if (item == "operation_error") {
+    answerCalculationData[2]++;
+    answerDifficultyData[2] /= difficulty;
   }
-  if (selectedAnswer == "D") {
-    {
-      if (diagnosis.D === "correct") {
-        correct++;
-      } else if (diagnosis.D == "sign_error") {
-        sign_error++;
-        if (sign_error > 0) {
-          sign_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.D == "operation_error") {
-        operation_error++;
-        if (operation_error > 0) {
-          operation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.D == "variable_isolation_error") {
-        variable_isolation_error++;
-        if (variable_isolation_error > 0) {
-          variable_isolation_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.D == "distribution_error") {
-        distribution_error++;
-        if (distribution_error > 0) {
-          distribution_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.D == "exponent_rule_error") {
-        exponent_rule_error++;
-        if (exponent_rule_error > 0) {
-          exponent_rule_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.D == "formula_error") {
-        formula_error++;
-        if (formula_error > 0) {
-          formula_errorDifficulty *= difficulty;
-        }
-      } else if (diagnosis.D == "graph_interpretation_error") {
-        graph_interpretation_error++;
-        if (graph_interpretation_error > 0) {
-          graph_interpretation_errorDifficulty *= difficulty;
-        }
-      }
-    }
+  if (item == "variable_isolation_error") {
+    answerCalculationData[3]++;
+    answerDifficultyData[3] /= difficulty;
   }
+  if (item == "distribution_error") {
+    answerCalculationData[4]++;
+    answerDifficultyData[4] /= difficulty;
+  }
+  if (item == "exponent_rule_error") {
+    answerCalculationData[5]++;
+    answerDifficultyData[5] /= difficulty;
+  }
+  if (item == "formula_error") {
+    answerCalculationData[6]++;
+    answerDifficultyData[6] /= difficulty;
+  }
+  if (item == "graph_interpretation_error") {
+    answerCalculationData[7]++;
+    answerDifficultyData[7] /= difficulty;
+  }
+  localStorage.setItem(
+    "answerCalculationData",
+    JSON.stringify(answerCalculationData),
+  );
+  localStorage.setItem(
+    "answerDifficultyData",
+    JSON.stringify(answerDifficultyData),
+  );
 }
 
-function calculateTotal(diagnosis: {
-  A: string;
-  B: string;
-  C: string;
-  D: string;
-}) {
-  const diagnosisy = Object.values(diagnosis);
+function calculateTotal(items: { diagnosis: object }[]) {
+  const answers = items.flatMap((item) => Object.values(item.diagnosis));
 
-  for (const diagnostic of diagnosisy) {
-    if (diagnostic === "correct") {
-      correctTotal++;
+  for (const answer of answers) {
+    if (answer === "correct") {
+      answerTotalData[0]++;
     }
-    if (diagnostic === "sign_error") {
-      sign_errorTotal++;
+    if (answer === "sign_error") {
+      answerTotalData[1]++;
     }
-    if (diagnostic === "operation_error") {
-      operation_errorTotal++;
+    if (answer === "operation_error") {
+      answerTotalData[2]++;
     }
-    if (diagnostic === "variable_isolation_error") {
-      variable_isolation_errorTotal++;
+    if (answer === "variable_isolation_error") {
+      answerTotalData[3]++;
     }
-    if (diagnostic === "distribution_error") {
-      distribution_errorTotal++;
+    if (answer === "distribution_error") {
+      answerTotalData[4]++;
     }
-    if (diagnostic === "exponent_rule_error") {
-      exponent_rule_errorTotal++;
+    if (answer === "exponent_rule_error") {
+      answerTotalData[5]++;
     }
-    if (diagnostic === "formula_error") {
-      formula_errorTotal++;
+    if (answer === "formula_error") {
+      answerTotalData[6]++;
     }
-    if (diagnostic === "graph_interpretation_error") {
-      graph_interpretation_errorTotal++;
+    if (answer === "graph_interpretation_error") {
+      answerTotalData[7]++;
     }
   }
+  localStorage.setItem("answerTotalData", JSON.stringify(answerTotalData));
 }
 
-function calculatePercentages() {
-  sign_errorDifficulty / sign_error;
-
+function calculatePercentages(
+  answerCalculationData: number[],
+  answerTotalData: number[],
+  answerDifficultyData: number[],
+) {
   return {
     sign_errorPercentage:
-      (sign_error / sign_errorTotal) * sign_errorDifficulty * 1000,
+      (answerCalculationData[1] / answerTotalData[1]) * answerDifficultyData[0],
     operation_errorPercentage:
-      (operation_error / operation_errorTotal) *
-      operation_errorDifficulty *
+      (answerCalculationData[2] / answerTotalData[2]) *
+      answerDifficultyData[1] *
       100,
     variable_isolation_errorPercentage:
-      (variable_isolation_error / variable_isolation_errorTotal) *
-      variable_isolation_errorDifficulty *
+      (answerCalculationData[3] / answerTotalData[3]) *
+      answerDifficultyData[2] *
       100,
     distribution_errorPercentage:
-      (distribution_error / distribution_errorTotal) *
-      distribution_errorDifficulty *
+      (answerCalculationData[4] / answerTotalData[4]) *
+      answerDifficultyData[3] *
       100,
     exponent_rule_errorPercentage:
-      (exponent_rule_error / exponent_rule_errorTotal) *
-      exponent_rule_errorDifficulty *
+      (answerCalculationData[5] / answerTotalData[5]) *
+      answerDifficultyData[4] *
       100,
     formula_errorPercentage:
-      (formula_error / formula_errorTotal) * formula_errorDifficulty * 100,
+      (answerCalculationData[6] / answerTotalData[6]) *
+      answerDifficultyData[5] *
+      100,
     graph_interpretation_errorPercentage:
-      (graph_interpretation_error / graph_interpretation_errorTotal) *
-      graph_interpretation_errorDifficulty *
+      (answerCalculationData[7] / answerTotalData[7]) *
+      answerDifficultyData[6] *
       100,
   };
 }

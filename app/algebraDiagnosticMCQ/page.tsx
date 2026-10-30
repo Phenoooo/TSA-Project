@@ -3,10 +3,12 @@ import { useState } from "react";
 import Link from "next/link";
 import MCQS from "../data/diagnosticMCQ";
 import Question from "../components/MCQ";
+import { calculateTotal } from "../data/questionEngine";
 
 export default function AlgebraDiagonosticMCQ() {
   const [index, setIndex] = useState(0);
   if (index == 20) {
+    calculateTotal(MCQS);
     return <Link href="/algebraDiagnosticFRQ">FRQS</Link>;
   }
 
