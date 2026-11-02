@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScrollMath</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+}
+
+.feed {
+    height: 100vh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+}
+
+.problem {
+    height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+}
+
+h1 {
+    color: #aaa;
+    font-size: 18px;
+}
+
+.question {
+    font-size: 42px;
+    margin: 30px 0;
+}
+
+input {
+    padding: 14px;
+    width: 200px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 8px;
+    border: none;
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    background: #7657ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.locked {
+    display: none;
+}
+
+.success {
+    color: #50fa9b;
+}
+
+.error {
+    color: #ff6b6b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="feed" id="feed">
+
+    <section class="problem" data-answer="12">
+        <h1>PROBLEM 1</h1>
+        <div class="question">7 + 5 = ?</div>
+        <input type="number" placeholder="Your answer">
+        <button onclick="checkAnswer(this)">Submit</button>
+        <div class="feedback"></div>
+    </section>
+
+    <section class="problem locked" data-answer="42">
+        <h1>PROBLEM 2</h1>
+        <div class="question">6 × 7 = ?</div>
+        <input type="number" placeholder="Your answer">
+        <button onclick="checkAnswer(this)">Submit</button>
+        <div class="feedback"></div>
+    </section>
+
+    <section class="problem locked" data-answer="8">
+        <h1>PROBLEM 3</h1>
+        <div class="question">56 ÷ 7 = ?</div>
+        <input type="number" placeholder="Your answer">
+        <button onclick="checkAnswer(this)">Submit</button>
+        <div class="feedback"></div>
+    </section>
+
+    <section class="problem locked" data-answer="25">
+        <h1>PROBLEM 4</h1>
+        <div class="question">5² = ?</div>
+        <input type="number" placeholder="Your answer">
+        <button onclick="checkAnswer(this)">Submit</button>
+        <div class="feedback"></div>
+    </section>
+
+    <section class="problem locked" data-answer="15">
+        <h1>PROBLEM 5</h1>
+        <div class="question">3 × 5 = ?</div>
+        <input type="number" placeholder="Your answer">
+        <button onclick="checkAnswer(this)">Submit</button>
+        <div class="feedback"></div>
+    </section>
+
+</div>
+
+<script>
+const feed = document.getElementById("feed");
+const problems = [...document.querySelectorAll(".problem")];
+let current = 0;
+
+function checkAnswer(button) {
+    const problem = button.closest(".problem");
+    const input = problem.querySelector("input");
+    const feedback = problem.querySelector(".feedback");
+
+    if (input.value.trim() === "") {
+        feedback.textContent = "Enter an answer.";
+        feedback.className = "feedback error";
+        return;
+    }
+
+    if (Number(input.value) !== Number(problem.dataset.answer)) {
+        feedback.textContent = "Incorrect. Try again.";
+        feedback.className = "feedback error";
+        return;
+    }
+
+    feedback.textContent = "Correct!";
+    feedback.className = "feedback success";
+    input.disabled = true;
+    button.disabled = true;
+
+    if (current < problems.length - 1) {
+        current++;
+        problems[current].classList.remove("locked");
+
+        setTimeout(() => {
+            problems[current].scrollIntoView({ behavior: "smooth" });
+        }, 400);
+    } else {
+        feedback.textContent = "You completed all the problems!";
+    }
+}
+
+feed.addEventListener("scroll", () => {
+    const maxScroll = problems[current].offsetTop;
+
+    if (feed.scrollTop > maxScroll + 10) {
+        problems[current].scrollIntoView({ behavior: "smooth" });
+    }
+});
+</script>
+
+</body>
+</html>
