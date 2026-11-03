@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollMath</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+        }
+
+        .feed {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+        }
+
+        .problem {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+        }
+
+        h1 {
+            font-size: 18px;
+            color: #aaa;
+        }
+
+        .question {
+            font-size: clamp(28px, 5vw, 48px);
+            margin: 30px 0;
+        }
+
+        input {
+            width: 200px;
+            padding: 14px;
+            font-size: 20px;
+            text-align: center;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 28px;
+            font-size: 17px;
+            border: none;
+            border-radius: 8px;
+            background: #7c5cff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .locked {
+            overflow: hidden;
+        }
+
+        .success {
+            color: #5cff9d;
+        }
+
+        .error {
+            color: #ff7777;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="feed" id="feed">
+
+        <section class="problem" data-answer="12">
+            <h1>Problem 1</h1>
+            <div class="question">7 + 5 = ?</div>
+            <input type="number" placeholder="Your answer">
+            <button onclick="checkAnswer(this)">Submit</button>
+            <div class="feedback"></div>
+        </section>
+
+        <section class="problem locked" data-answer="42">
+            <h1>Problem 2</h1>
+            <div class="question">6 × 7 = ?</div>
+            <input type="number" placeholder="Your answer" disabled>
+            <button onclick="checkAnswer(this)" disabled>Submit</button>
+            <div class="feedback"></div>
+        </section>
+
+        <section class="problem locked" data-answer="8">
+            <h1>Problem 3</h1>
+            <div class="question">56 ÷ 7 = ?</div>
+            <input type="number" placeholder="Your answer" disabled>
+            <button onclick="checkAnswer(this)" disabled>Submit</button>
+            <div class="feedback"></div>
+        </section>
+
+        <section class="problem locked" data-answer="25">
+            <h1>Problem 4</h1>
+            <div class="question">5² = ?</div>
+            <input type="number" placeholder="Your answer" disabled>
+            <button onclick="checkAnswer(this)" disabled>Submit</button>
+            <div class="feedback"></div>
+        </section>
+
+    </div>
+
+    <script>
+        const feed = document.getElementById("feed");
+        const problems = document.querySelectorAll(".problem");
+
+        function checkAnswer(button) {
+            const problem = button.closest(".problem");
+            const input = problem.querySelector("input");
+            const feedback = problem.querySelector(".feedback");
+            const answer = problem.dataset.answer;
+
+            if (input.value.trim() === "") {
+                feedback.textContent = "Enter an answer first.";
+                feedback.className = "feedback error";
+                return;
+            }
+
+            if (Number(input.value) === Number(answer)) {
+                feedback.textContent = "Correct! Keep scrolling.";
+                feedback.className = "feedback success";
+
+                const nextProblem = problem.nextElementSibling;
+
+                if (nextProblem) {
+                    nextProblem.classList.remove("locked");
+                    nextProblem.querySelector("input").disabled = false;
+                    nextProblem.querySelector("button").disabled = false;
+
+                    setTimeout(() => {
+                        nextProblem.scrollIntoView({
+                            behavior: "smooth"
+                        });
+                    }, 500);
+                } else {
+                    feedback.textContent = "Correct! You've completed all the problems!";
+                }
+
+                input.disabled = true;
+                button.disabled = true;
+            } else {
+                feedback.textContent = "Incorrect. Try again to continue.";
+                feedback.className = "feedback error";
+            }
+        }
+
+        feed.addEventListener("scroll", () => {
+            const currentProblem = Math.round(feed.scrollTop / window.innerHeight);
+            const problem = problems[currentProblem];
+
+            if (problem && problem.classList.contains("locked")) {
+                const unlockedProblems = [...problems].filter(
+                    p => !p.classList.contains("locked")
+                );
+
+                unlockedProblems[unlockedProblems.length - 1]
+                    .scrollIntoView({ behavior: "smooth" });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+export default function ScrollingDemo() {
+  return (
+    <main>
+      <h1>testing</h1>
+      <p>testing!</p>
+    </main>
+  );
+}
