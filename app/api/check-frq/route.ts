@@ -1,31 +1,3 @@
-// import { GoogleGenAI } from "@google/genai";
-
-// const ai = new GoogleGenAI({
-//   apiKey: process.env.GEMINI_API_KEY,
-// });
-
-// export async function POST(request: Request) {
-//   const body = await request.json();
-
-//   const answers = body.answers;
-//   const questions = body.questions;
-
-//   const result = await ai.models.generateContent({
-//     model: "google/gemma-4-31b",
-//     contents: [
-//       "Analyze the student's answers and written work. Choose only from these categories, multiple are ok, and store them each as seperate variables:" +
-//         " sign_error (integer), operation_error (integer), distribution_error (integer)," +
-//         " exponent_rule_error (integer), graph_interpretation_error (integer)," +
-//         " variable_isolation_error (integer), formula_error (integer)." +
-//         " Return a result for each submitted question." +
-//         " Include the question ID and a short explanation." +
-//         " Do not invent new categories.",
-//       "Student work: " + answers + " Questions: " + questions,
-//     ],
-//   });
-
-//   return Response.json({ feedback: result.text });
-// }
 import { GoogleGenAI, Type } from "@google/genai";
 import { randomUUID } from "crypto";
 import {
@@ -35,7 +7,9 @@ import {
   type FRQSubmissionResult,
   type QuestionAnalysis,
 } from "@/app/data/errorTypes";
-import { saveFRQResult } from "../../../.vscode/lib/saveResults";
+import { saveFRQResult } from "@/lib/saveResults";
+import { recordEvents } from "@/lib/profileStore";
+import { clamp, type AnswerEvent, type Phase } from "@/lib/scale";
 
 export const runtime = "nodejs";
 
@@ -45,6 +19,7 @@ const MAX_WORK_CHARS = 1500;
 interface IncomingItem {
   question: string;
   work: string;
+  difficulty: number;
 }
 
 const responseSchema = {
@@ -100,8 +75,10 @@ export async function POST(request: Request) {
   }
 
   let items: IncomingItem[];
+  let phase: Phase = "placement";
   try {
     const body = await request.json();
+    phase = body.phase === "practice" ? "practice" : "placement";
     items = body.items;
     if (
       !Array.isArray(items) ||
@@ -115,13 +92,14 @@ export async function POST(request: Request) {
     }
   } catch {
     return Response.json(
-      { error: "Expected { items: [{ question: string, work: string }] }" },
+      { error: "Expected { phase?, items: [{ question, work, difficulty? }] }" },
       { status: 400 },
     );
   }
   items = items.map((i) => ({
     question: i.question,
     work: i.work.slice(0, MAX_WORK_CHARS),
+    difficulty: clamp(Number(i.difficulty) || 0.3, 0.05, 0.95),
   }));
 
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -131,7 +109,11 @@ export async function POST(request: Request) {
     const response = await ai.models.generateContent({
       model: MODEL,
       contents: JSON.stringify(
-        items.map((item, questionIndex) => ({ questionIndex, ...item })),
+        items.map((item, questionIndex) => ({
+          questionIndex,
+          question: item.question,
+          work: item.work,
+        })),
       ),
       config: {
         systemInstruction,
@@ -195,5 +177,25 @@ export async function POST(request: Request) {
     console.error("Could not write results to /data:", err);
   }
 
-  return Response.json(result);
+  let profile = null;
+  try {
+    const events: AnswerEvent[] = analyses.map((a, i) => ({
+      id: `${result.id}_q${i}`,
+      at: result.createdAt,
+      source: "frq",
+      phase,
+      difficulty: items[i].difficulty,
+      correct: a.isCorrect,
+      offered: [],
+      missed: Array.from(new Set(a.errors.map((e) => e.category))),
+    }));
+    profile = await recordEvents(
+      events,
+      phase === "placement" ? { phase, source: "frq" } : undefined,
+    );
+  } catch (err) {
+    console.error("Could not update profile:", err);
+  }
+
+  return Response.json({ ...result, profile });
 }

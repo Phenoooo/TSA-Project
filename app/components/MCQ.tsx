@@ -17,6 +17,7 @@ interface QuestionProps {
   difficulty: number;
 
   setIndex: React.Dispatch<React.SetStateAction<number>>;
+  onAnswer?: (letter: string) => void;
 }
 
 function Question(props: QuestionProps) {
@@ -110,6 +111,7 @@ function Question(props: QuestionProps) {
           }
 
           props.setIndex(props.index + 1);
+          props.onAnswer?.(selectedAnswer);
 
           CalculateAnswers(props.difficulty, answer);
 

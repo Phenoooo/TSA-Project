@@ -7,6 +7,7 @@ import Question from "../components/FRQ";
 interface Item {
   question: string;
   work: string;
+  difficulty: number;
 }
 
 export default function AlgebraDiagonosticFRQ() {
@@ -23,7 +24,7 @@ export default function AlgebraDiagonosticFRQ() {
       const res = await fetch("/api/check-frq", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: allItems }),
+        body: JSON.stringify({ phase: "placement", items: allItems }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -32,7 +33,7 @@ export default function AlgebraDiagonosticFRQ() {
       const result = await res.json();
 
       localStorage.setItem("latestFRQResult", JSON.stringify(result));
-      router.push("/dashboard");
+      router.push("/practiceFRQ"); // change back to "/dashboard" if you prefer
     } catch (err) {
       console.error(err);
       setStatus("error");
@@ -40,7 +41,14 @@ export default function AlgebraDiagonosticFRQ() {
   }
 
   function handleSubmit(work: string) {
-    const next = [...items, { question: FRQS[index].question, work }];
+    const next = [
+      ...items,
+      {
+        question: FRQS[index].question,
+        work,
+        difficulty: FRQS[index].difficulty,
+      },
+    ];
     setItems(next);
     if (index + 1 === FRQS.length) {
       grade(next);

@@ -5,7 +5,7 @@ import {
   ERROR_TYPES,
   type ErrorType,
   type FRQSubmissionResult,
-} from "../../app/data/errorTypes";
+} from "../app/data/errorTypes";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const RESULTS_DIR = path.join(DATA_DIR, "frq-results");
