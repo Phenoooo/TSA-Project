@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 
-import CalculateAnswers from "../data/questionEngine";
 import React from "react";
+import { NewQuestion } from "../data/questionEngine";
+import { saveAnswers } from "../data/questionEngine";
 
 interface QuestionProps {
   question: string;
@@ -22,7 +23,6 @@ interface QuestionProps {
 function Question(props: QuestionProps) {
   const [selected, setSelected] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState("");
-  let answer = "";
 
   return (
     <div>
@@ -99,19 +99,19 @@ function Question(props: QuestionProps) {
           const answerC = document.getElementById("q1C") as HTMLInputElement;
           const answerD = document.getElementById("q1D") as HTMLInputElement;
 
-          if (selectedAnswer == "A") {
-            answer = props.diagnosis.A;
-          } else if (selectedAnswer == "B") {
-            answer = props.diagnosis.B;
-          } else if (selectedAnswer == "C") {
-            answer = props.diagnosis.C;
-          } else if (selectedAnswer == "D") {
-            answer = props.diagnosis.D;
-          }
+          const diagnosis =
+            props.diagnosis[selectedAnswer as keyof typeof props.diagnosis];
+          if (!diagnosis) return;
+
+          const newQuestion = new NewQuestion(
+            diagnosis,
+            props.index,
+            props.difficulty,
+            diagnosis === "correct",
+          );
 
           props.setIndex(props.index + 1);
-
-          CalculateAnswers(props.difficulty, answer);
+          saveAnswers(newQuestion);
 
           if (answerA.checked) {
             answerA.checked = false;
@@ -123,7 +123,6 @@ function Question(props: QuestionProps) {
             answerD.checked = false;
           }
           setSelected(false);
-          answer = "";
         }}
       >
         next

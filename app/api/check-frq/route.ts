@@ -39,7 +39,7 @@ import { saveFRQResult } from "../../../.vscode/lib/saveResults";
 
 export const runtime = "nodejs";
 
-const MODEL = process.env.GEMINI_MODEL ?? "gemini-flash-latest";
+const MODEL = process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
 const MAX_WORK_CHARS = 1500;
 
 interface IncomingItem {

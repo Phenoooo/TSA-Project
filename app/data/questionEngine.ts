@@ -1,50 +1,71 @@
 // correct, sign, operation, varaible isolation, distribution, exponent, formula, graph interpretation
 
-let answerCalculationData = [0, 0, 0, 0, 0, 0, 0, 0];
+const answerTotalData = [0, 0, 0, 0, 0, 0, 0, 0];
 
-let answerTotalData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const answerDifficultyData = [1, 1, 1, 1, 1, 1, 1];
 
-let answerDifficultyData = [1, 1, 1, 1, 1, 1, 1];
+const errorCategoryIndex: Record<string, number> = {
+  sign_error: 1,
+  operation_error: 2,
+  variable_isolation_error: 3,
+  distribution_error: 4,
+  exponent_rule_error: 5,
+  formula_error: 6,
+  graph_interpretation_error: 7,
+};
 
-//Make a class that is used to create objects for the questions
-//Do this later Hari Singh
+export interface QuestionAnswer {
+  error: string;
+  questionID: number;
+  difficulty: number;
+  correct: boolean;
+}
 
-function CalculateAnswers(
-  difficulty: number,
+class NewQuestion implements QuestionAnswer {
+  error: string;
+  questionID: number;
+  difficulty: number;
+  correct: boolean;
 
-  item: string,
-) {
-  if (item == "correct") {
-    answerCalculationData[0]++;
+  constructor(
+    error: string,
+    questionID: number,
+    difficulty: number,
+    correct: boolean,
+  ) {
+    this.error = error;
+    this.questionID = questionID;
+    this.difficulty = difficulty;
+    this.correct = correct;
   }
-  if (item == "sign_error") {
-    answerCalculationData[1]++;
-    answerDifficultyData[1] /= difficulty;
-  }
-  if (item == "operation_error") {
-    answerCalculationData[2]++;
-    answerDifficultyData[2] /= difficulty;
-  }
-  if (item == "variable_isolation_error") {
-    answerCalculationData[3]++;
-    answerDifficultyData[3] /= difficulty;
-  }
-  if (item == "distribution_error") {
-    answerCalculationData[4]++;
-    answerDifficultyData[4] /= difficulty;
-  }
-  if (item == "exponent_rule_error") {
-    answerCalculationData[5]++;
-    answerDifficultyData[5] /= difficulty;
-  }
-  if (item == "formula_error") {
-    answerCalculationData[6]++;
-    answerDifficultyData[6] /= difficulty;
-  }
-  if (item == "graph_interpretation_error") {
-    answerCalculationData[7]++;
-    answerDifficultyData[7] /= difficulty;
-  }
+}
+// the idea is that the graph holds the question id / tells u which question that you got wrong, still have to figure out
+// a page that shows the question you got wrong
+
+function saveAnswers(object: NewQuestion) {
+  const existingQuestions = JSON.parse(
+    localStorage.getItem("questionArray") || "[]",
+  );
+  existingQuestions.push(object);
+  localStorage.setItem("questionArray", JSON.stringify(existingQuestions));
+}
+
+function CalculateAnswers(array: NewQuestion[]) {
+  const answerCalculationData = [0, 0, 0, 0, 0, 0, 0, 0];
+  const correct = array.map((object) => {
+    if (object.correct) {
+      answerCalculationData[0]++;
+      return 1;
+    }
+
+    const index = errorCategoryIndex[object.error];
+    if (index !== undefined) {
+      answerCalculationData[index]++;
+    }
+
+    return 0;
+  });
+
   localStorage.setItem(
     "answerCalculationData",
     JSON.stringify(answerCalculationData),
@@ -53,6 +74,7 @@ function CalculateAnswers(
     "answerDifficultyData",
     JSON.stringify(answerDifficultyData),
   );
+  localStorage.setItem("correct", JSON.stringify(correct));
 }
 
 function calculateTotal(items: { diagnosis: object }[]) {
@@ -93,34 +115,50 @@ function calculatePercentages(
   answerDifficultyData: number[],
 ) {
   return {
-    sign_errorPercentage:
-      (answerCalculationData[1] / answerTotalData[1]) * answerDifficultyData[0],
-    operation_errorPercentage:
+    sign_errorPercentage: Math.round(
+      (answerCalculationData[1] /
+        answerTotalData[1] /
+        answerDifficultyData[0]) *
+        100,
+    ),
+    operation_errorPercentage: Math.round(
       (answerCalculationData[2] / answerTotalData[2]) *
-      answerDifficultyData[1] *
-      100,
-    variable_isolation_errorPercentage:
+        answerDifficultyData[1] *
+        100,
+    ),
+    variable_isolation_errorPercentage: Math.round(
       (answerCalculationData[3] / answerTotalData[3]) *
-      answerDifficultyData[2] *
-      100,
-    distribution_errorPercentage:
+        answerDifficultyData[2] *
+        100,
+    ),
+    distribution_errorPercentage: Math.round(
       (answerCalculationData[4] / answerTotalData[4]) *
-      answerDifficultyData[3] *
-      100,
-    exponent_rule_errorPercentage:
+        answerDifficultyData[3] *
+        100,
+    ),
+    exponent_rule_errorPercentage: Math.round(
       (answerCalculationData[5] / answerTotalData[5]) *
-      answerDifficultyData[4] *
-      100,
-    formula_errorPercentage:
+        answerDifficultyData[4] *
+        100,
+    ),
+    formula_errorPercentage: Math.round(
       (answerCalculationData[6] / answerTotalData[6]) *
-      answerDifficultyData[5] *
-      100,
-    graph_interpretation_errorPercentage:
+        answerDifficultyData[5] *
+        100,
+    ),
+    graph_interpretation_errorPercentage: Math.round(
       (answerCalculationData[7] / answerTotalData[7]) *
-      answerDifficultyData[6] *
-      100,
+        answerDifficultyData[6] *
+        100,
+    ),
   };
 }
 
-export { calculatePercentages, calculateTotal };
+export {
+  calculatePercentages,
+  calculateTotal,
+  NewQuestion,
+  saveAnswers,
+  CalculateAnswers,
+};
 export default CalculateAnswers;
