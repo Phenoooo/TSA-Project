@@ -113,14 +113,16 @@ export default function PracticeMCQ() {
     }
   }
 
-  if (status === "loading") return <main>Writing questions for you...</main>;
-  if (status === "grading") return <main>Checking your answers...</main>;
+  if (status === "loading") return <main className="app-page app-status">Writing questions for you...</main>;
+  if (status === "grading") return <main className="app-page app-status">Checking your answers...</main>;
 
   if (status === "error") {
     return (
-      <main>
+      <main className="app-page">
+        <section className="app-panel">
         <p>{error}</p>
         <button
+          className="app-action app-action--primary"
           onClick={() =>
             generated && picks.length === generated.questions.length
               ? grade(picks)
@@ -129,6 +131,7 @@ export default function PracticeMCQ() {
         >
           Try again
         </button>
+        </section>
       </main>
     );
   }
@@ -136,7 +139,8 @@ export default function PracticeMCQ() {
   if (status === "done" && result && generated) {
     const right = result.results.filter((r) => r.correct).length;
     return (
-      <main>
+      <main className="app-page">
+        <section className="app-panel">
         <h1>Practice results</h1>
         <p>
           {right} of {result.results.length} correct
@@ -153,7 +157,7 @@ export default function PracticeMCQ() {
         {result.results.map((r) => {
           const q = generated.questions[r.index];
           return (
-            <div key={q.id}>
+            <div className="app-panel app-panel--compact" key={q.id}>
               <h3>
                 Q{r.index + 1}: {r.correct ? "Correct" : "Incorrect"}
               </h3>
@@ -174,9 +178,12 @@ export default function PracticeMCQ() {
             </div>
           );
         })}
-        <button onClick={reload}>Practice again</button>{" "}
-        <Link href="/practiceFRQ">Try FRQs</Link>{" "}
-        <Link href="/dashboard">Dashboard</Link>
+        <div className="flex flex-wrap gap-3">
+          <button className="app-action app-action--primary" onClick={reload}>Practice again</button>
+          <Link className="app-action app-action--secondary" href="/practiceFRQ">Try FRQs</Link>
+          <Link className="app-action app-action--secondary" href="/dashboard">Statistics</Link>
+        </div>
+        </section>
       </main>
     );
   }
@@ -184,19 +191,23 @@ export default function PracticeMCQ() {
   if (!generated) return null;
   const q = generated.questions[index];
   return (
-    <main>
-      <p>
+    <main className="app-page">
+      <section className="app-panel">
+      <p className="app-eyebrow">
         Your level: {generated.level} / 10 ({generated.label})
         {generated.weakestTopics.length > 0 &&
           ` · Focus: ${generated.weakestTopics.map(pretty).join(", ")}`}
       </p>
-      <p>
+      <div className="app-progress-track" aria-label={`Question ${index + 1} of ${generated.questions.length}`}>
+        <div className="app-progress-value" style={{ width: `${((index + 1) / generated.questions.length) * 100}%` }} />
+      </div>
+      <p className="app-eyebrow">
         Question {index + 1} of {generated.questions.length}
       </p>
-      <h1>{q.question}</h1>
-      <form onSubmit={(e) => e.preventDefault()}>
+      <h1 className="text-xl font-medium leading-snug text-[var(--app-text)]">{q.question}</h1>
+      <form className="grid gap-3" onSubmit={(e) => e.preventDefault()}>
         {q.answers.map((answer, i) => (
-          <label key={i} style={{ display: "block" }}>
+          <label className="app-choice" key={i}>
             <input
               type="radio"
               name="choice"
@@ -207,9 +218,10 @@ export default function PracticeMCQ() {
           </label>
         ))}
       </form>
-      <button disabled={!selected} onClick={handleNext}>
-        {index + 1 === generated.questions.length ? "submit" : "next"}
+      <button className="app-action app-action--primary" disabled={!selected} onClick={handleNext}>
+        {index + 1 === generated.questions.length ? "Submit" : "Next"}
       </button>
+      </section>
     </main>
   );
 }

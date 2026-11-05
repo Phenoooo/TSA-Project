@@ -1,135 +1,103 @@
 "use client";
 import { useState } from "react";
-
-import React from "react";
 import { NewQuestion } from "../data/questionEngine";
 import { saveAnswers } from "../data/questionEngine";
+
+type AnswerLetter = "A" | "B" | "C" | "D";
 
 interface QuestionProps {
   question: string;
   answers: string[];
   index: number;
-  diagnosis: {
-    A: string;
-    B: string;
-    C: string;
-    D: string;
-  };
+  diagnosis: Record<AnswerLetter, string>;
   difficulty: number;
-
-  setIndex: React.Dispatch<React.SetStateAction<number>>;
-  onAnswer?: (letter: string) => void;
+  setIndex: (index: number) => void;
+  onAnswer?: (letter: AnswerLetter, answer: NewQuestion) => void;
 }
 
 function Question(props: QuestionProps) {
-  const [selected, setSelected] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [selectedAnswer, setSelectedAnswer] = useState<AnswerLetter | null>(
+    null,
+  );
 
   return (
-    <div>
-      <h1>{props.question}</h1>
-      <form>
-        <br></br>
+    <section className="app-panel">
+      <h1 className="mb-6 text-xl font-medium leading-snug text-[var(--app-text)]">
+        {props.question}
+      </h1>
+      <form
+        className="grid gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!selectedAnswer) return;
 
-        <br></br>
-
-        <label htmlFor="q1A">
-          <input
-            id="q1A"
-            type="radio"
-            name="mcq"
-            value="A"
-            onChange={() => {
-              setSelectedAnswer("A");
-              setSelected(true);
-            }}
-          />
-          {props.answers[0]}
-        </label>
-        <br></br>
-        <label htmlFor="q1B">
-          <input
-            id="q1B"
-            type="radio"
-            value="B"
-            name="mcq"
-            onChange={() => {
-              setSelectedAnswer("B");
-              setSelected(true);
-            }}
-          />
-          {props.answers[1]}
-        </label>
-        <br></br>
-        <label htmlFor="q1C">
-          <input
-            id="q1C"
-            name="mcq"
-            type="radio"
-            value="C"
-            onChange={() => {
-              setSelectedAnswer("C");
-              setSelected(true);
-            }}
-          />
-          {props.answers[2]}
-        </label>
-        <br></br>
-        <label htmlFor="q1D">
-          <input
-            id="q1D"
-            type="radio"
-            name="mcq"
-            value="D"
-            onChange={() => {
-              setSelectedAnswer("D");
-              setSelected(true);
-            }}
-          />
-          {props.answers[3]}
-        </label>
-      </form>
-      <div></div>
-
-      <button
-        disabled={!selected}
-        id="nextButton"
-        onClick={() => {
-          const answerA = document.getElementById("q1A") as HTMLInputElement;
-          const answerB = document.getElementById("q1B") as HTMLInputElement;
-          const answerC = document.getElementById("q1C") as HTMLInputElement;
-          const answerD = document.getElementById("q1D") as HTMLInputElement;
-
-          const diagnosis =
-            props.diagnosis[selectedAnswer as keyof typeof props.diagnosis];
-          if (!diagnosis) return;
-
-          const newQuestion = new NewQuestion(
+          const diagnosis = props.diagnosis[selectedAnswer];
+          const answer = new NewQuestion(
             diagnosis,
             props.index,
             props.difficulty,
             diagnosis === "correct",
           );
-
+          saveAnswers(answer);
+          props.onAnswer?.(selectedAnswer, answer);
           props.setIndex(props.index + 1);
-
-          CalculateAnswers(props.difficulty, answer);
-
-          if (answerA.checked) {
-            answerA.checked = false;
-          } else if (answerB.checked) {
-            answerB.checked = false;
-          } else if (answerC.checked) {
-            answerC.checked = false;
-          } else if (answerD.checked) {
-            answerD.checked = false;
-          }
-          setSelected(false);
+          setSelectedAnswer(null);
         }}
       >
-        next
-      </button>
-    </div>
+        <label className="app-choice" htmlFor="q1A">
+          <input
+            id="q1A"
+            type="radio"
+            name="mcq"
+            value="A"
+            checked={selectedAnswer === "A"}
+            onChange={() => setSelectedAnswer("A")}
+          />
+          {props.answers[0]}
+        </label>
+        <label className="app-choice" htmlFor="q1B">
+          <input
+            id="q1B"
+            type="radio"
+            value="B"
+            name="mcq"
+            checked={selectedAnswer === "B"}
+            onChange={() => setSelectedAnswer("B")}
+          />
+          {props.answers[1]}
+        </label>
+        <label className="app-choice" htmlFor="q1C">
+          <input
+            id="q1C"
+            name="mcq"
+            type="radio"
+            value="C"
+            checked={selectedAnswer === "C"}
+            onChange={() => setSelectedAnswer("C")}
+          />
+          {props.answers[2]}
+        </label>
+        <label className="app-choice" htmlFor="q1D">
+          <input
+            id="q1D"
+            type="radio"
+            name="mcq"
+            value="D"
+            checked={selectedAnswer === "D"}
+            onChange={() => setSelectedAnswer("D")}
+          />
+          {props.answers[3]}
+        </label>
+        <button
+          disabled={!selectedAnswer}
+          id="nextButton"
+          className="app-action app-action--primary mt-2 justify-self-start"
+          type="submit"
+        >
+          Next
+        </button>
+      </form>
+    </section>
   );
 }
 export default Question;

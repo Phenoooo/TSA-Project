@@ -57,18 +57,18 @@ export default function AlgebraDiagonosticFRQ() {
     }
   }
 
-  if (status === "grading") return <main>Analyzing your work...</main>;
+  if (status === "grading") return <main className="app-page app-status">Analyzing your work...</main>;
   if (status === "error") {
     return (
-      <main>
+      <main className="app-page app-status">
         <p>Something went wrong analyzing your work.</p>
-        <button onClick={() => grade(items)}>Try again</button>
+        <button className="app-action app-action--primary" onClick={() => grade(items)}>Try again</button>
       </main>
     );
   }
 
   return (
-    <main>
+    <main className="app-page">
       <Question
         key={index}
         question={FRQS[index].question}

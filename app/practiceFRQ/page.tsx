@@ -116,14 +116,16 @@ export default function PracticeFRQ() {
     }
   }
 
-  if (status === "loading") return <main>Writing questions for you...</main>;
-  if (status === "grading") return <main>Analyzing your work...</main>;
+  if (status === "loading") return <main className="app-page app-status">Writing questions for you...</main>;
+  if (status === "grading") return <main className="app-page app-status">Analyzing your work...</main>;
 
   if (status === "error") {
     return (
-      <main>
+      <main className="app-page">
+        <section className="app-panel">
         <p>{error}</p>
         <button
+          className="app-action app-action--primary"
           onClick={() =>
             works.length && generated && works.length === generated.questions.length
               ? grade(works)
@@ -132,6 +134,7 @@ export default function PracticeFRQ() {
         >
           Try again
         </button>
+        </section>
       </main>
     );
   }
@@ -139,7 +142,8 @@ export default function PracticeFRQ() {
   if (status === "done" && result && generated) {
     const after = result.profile?.level;
     return (
-      <main>
+      <main className="app-page">
+        <section className="app-panel">
         <h1>Practice results</h1>
         <p>
           Level: {generated.level} → {after ?? "?"} / 10
@@ -152,7 +156,7 @@ export default function PracticeFRQ() {
           </p>
         )}
         {result.analyses.map((a) => (
-          <div key={a.questionIndex}>
+          <div className="app-panel app-panel--compact" key={a.questionIndex}>
             <h3>
               Q{a.questionIndex + 1}: {a.isCorrect ? "Correct" : "Needs work"}
             </h3>
@@ -167,9 +171,12 @@ export default function PracticeFRQ() {
             </ul>
           </div>
         ))}
-        <button onClick={reload}>Practice again</button>{" "}
-        <Link href="/practiceMCQ">Try MCQs</Link>{" "}
-        <Link href="/dashboard">Dashboard</Link>
+        <div className="flex flex-wrap gap-3">
+          <button className="app-action app-action--primary" onClick={reload}>Practice again</button>
+          <Link className="app-action app-action--secondary" href="/practiceMCQ">Try MCQs</Link>
+          <Link className="app-action app-action--secondary" href="/dashboard">Statistics</Link>
+        </div>
+        </section>
       </main>
     );
   }
@@ -177,13 +184,17 @@ export default function PracticeFRQ() {
   if (!generated) return null;
   const q = generated.questions[index];
   return (
-    <main>
-      <p>
+    <main className="app-page">
+      <section className="app-panel">
+      <p className="app-eyebrow">
         Your level: {generated.level} / 10 ({generated.label})
         {generated.weakestTopics.length > 0 &&
           ` · Focus: ${generated.weakestTopics.map(pretty).join(", ")}`}
       </p>
-      <p>
+      <div className="app-progress-track" aria-label={`Question ${index + 1} of ${generated.questions.length}`}>
+        <div className="app-progress-value" style={{ width: `${((index + 1) / generated.questions.length) * 100}%` }} />
+      </div>
+      <p className="app-eyebrow">
         Question {index + 1} of {generated.questions.length}
         {q.targetCategory ? ` · practicing ${pretty(q.targetCategory)}` : ""}
       </p>
@@ -193,6 +204,7 @@ export default function PracticeFRQ() {
         isLast={index + 1 === generated.questions.length}
         onSubmit={handleSubmit}
       />
+      </section>
     </main>
   );
 }

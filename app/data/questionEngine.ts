@@ -1,7 +1,5 @@
 // correct, sign, operation, varaible isolation, distribution, exponent, formula, graph interpretation
 
-const answerTotalData = [0, 0, 0, 0, 0, 0, 0, 0];
-
 const answerDifficultyData = [1, 1, 1, 1, 1, 1, 1];
 
 const errorCategoryIndex: Record<string, number> = {
@@ -78,6 +76,7 @@ function CalculateAnswers(array: NewQuestion[]) {
 }
 
 function calculateTotal(items: { diagnosis: object }[]) {
+  const answerTotalData = [0, 0, 0, 0, 0, 0, 0, 0];
   const answers = items.flatMap((item) => Object.values(item.diagnosis));
 
   for (const answer of answers) {

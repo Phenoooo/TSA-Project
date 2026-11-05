@@ -13,26 +13,29 @@ function Question({ question, isLast, disabled, onSubmit }: QuestionProps) {
   const enoughWritten = work.trim().length >= 20;
 
   return (
-    <div>
-      <h1>{question}</h1>
+    <section className="app-panel">
+      <h1 className="mb-6 text-xl font-medium leading-snug text-[var(--app-text)]">
+        {question}
+      </h1>
       <textarea
+        className="app-textarea"
         maxLength={1000}
         placeholder="Show your work here..."
         rows={8}
         value={work}
         onChange={(e) => setWork(e.target.value)}
       />
-      <br />
       <button
+        className="app-action app-action--primary mt-4"
         disabled={!enoughWritten || disabled}
         onClick={() => {
           onSubmit(work);
           setWork("");
         }}
       >
-        {isLast ? "submit" : "next"}
+        {isLast ? "Submit" : "Next"}
       </button>
-    </div>
+    </section>
   );
 }
 export default Question;
