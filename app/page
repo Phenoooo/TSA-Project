@@ -1,0 +1,168 @@
+"use client";
+
+import Link from "next/link";
+import { motion } from "motion/react";
+
+const feedSections = [
+  { id: "start", number: "01", label: "Start here" },
+  { id: "practice", number: "02", label: "Practice" },
+  { id: "progress", number: "03", label: "Your progress" },
+];
+
+export default function Home() {
+  return (
+    <main className="app-feed">
+      <nav
+        aria-label="Learning feed sections"
+        className="sticky top-0 z-10 border-b border-[var(--app-border)] bg-[var(--app-bg)]/95 px-5 py-3 backdrop-blur sm:px-8"
+      >
+        <div className="mx-auto flex max-w-4xl items-center gap-5">
+          <span className="mr-auto text-sm font-medium text-[var(--app-text)]">
+            Your learning feed
+          </span>
+          {feedSections.map((section) => (
+            <a
+              key={section.id}
+              href={`#${section.id}`}
+              className="hidden text-xs text-[var(--app-text-muted)] transition-colors hover:text-[var(--app-text)] sm:inline"
+            >
+              {section.number}{" "}
+              <span className="hidden md:inline">{section.label}</span>
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <div className="mx-auto max-w-4xl">
+        <motion.section
+          id="start"
+          aria-labelledby="feed-title"
+          className="app-feed-section app-feed-section--first"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <p className="text-sm text-[var(--app-text-muted)]">
+            01 / Start here
+          </p>
+          <h1
+            id="feed-title"
+            className="mt-4 max-w-2xl text-4xl font-medium tracking-tight text-[var(--app-text)] sm:text-5xl"
+          >
+            Stop Studying, Start Scrolling.
+          </h1>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--app-text-muted)] sm:text-lg">
+            Practice at your pace. Learn from each answer and build confidence
+            as you go.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/subjectChoice"
+              className="app-action app-action--primary"
+            >
+              Start practicing <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="/subjectChoice"
+              className="app-action app-action--secondary"
+            >
+              Try a diagnostic
+            </Link>
+          </div>
+          <a
+            href="#practice"
+            className="mt-16 inline-flex w-fit items-center gap-2 text-sm text-[var(--app-text-muted)] transition-colors hover:text-[var(--app-text)]"
+          >
+            Scroll to explore <span aria-hidden="true">↓</span>
+          </a>
+        </motion.section>
+
+        <motion.section
+          id="practice"
+          aria-labelledby="practice-title"
+          className="app-feed-section"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.4 }}
+        >
+          <p className="text-sm text-[var(--app-text-muted)]">
+            02 / Find your rhythm
+          </p>
+          <h2
+            id="practice-title"
+            className="mt-4 max-w-2xl text-3xl font-medium tracking-tight text-[var(--app-text)] sm:text-4xl"
+          >
+            Choose a way to practice.
+          </h2>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--app-text-muted)]">
+            Work through quick choices or show your thinking with a written
+            response.
+          </p>
+
+          <div className="mt-8 grid gap-4">
+            <Link href="/subjectChoice" className="app-choice-card group">
+              <span className="text-xs text-[var(--app-text-muted)]">
+                MIXED PRACTICE SESSION
+              </span>
+              <h3 className="mt-3 text-xl font-medium text-[var(--app-text)]">
+                MCQs + written responses
+              </h3>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--app-text-muted)]">
+                Work through one continuous sequence of multiple-choice and
+                written-response questions. Correct answers unlock the next
+                question, and your results update your learning profile.
+              </p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-[var(--app-accent-ink)]">
+                Start mixed practice <span aria-hidden="true">→</span>
+              </span>
+            </Link>
+          </div>
+
+          <a
+            href="#progress"
+            className="mt-12 inline-flex w-fit items-center gap-2 text-sm text-[var(--app-text-muted)] transition-colors hover:text-[var(--app-text)]"
+          >
+            Next: your progress <span aria-hidden="true">↓</span>
+          </a>
+        </motion.section>
+
+        <motion.section
+          id="progress"
+          aria-labelledby="progress-title"
+          className="app-feed-section"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.4 }}
+        >
+          <p className="text-sm text-[var(--app-text-muted)]">
+            03 / Keep learning
+          </p>
+          <h2
+            id="progress-title"
+            className="mt-4 max-w-2xl text-3xl font-medium tracking-tight text-[var(--app-text)] sm:text-4xl"
+          >
+            Turn your answers into a next step.
+          </h2>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--app-text-muted)]">
+            Your statistics show how your accuracy changes and which topics may
+            be worth another look.
+          </p>
+          <Link
+            href="/dashboard"
+            className="app-action app-action--secondary mt-8 w-fit"
+          >
+            View your statistics <span aria-hidden="true">→</span>
+          </Link>
+          <a
+            href="#start"
+            className="mt-16 inline-flex w-fit items-center gap-2 text-sm text-[var(--app-text-muted)] transition-colors hover:text-[var(--app-text)]"
+          >
+            Back to the start <span aria-hidden="true">↑</span>
+          </a>
+        </motion.section>
+      </div>
+    </main>
+  );
+}
