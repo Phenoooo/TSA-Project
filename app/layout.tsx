@@ -1,32 +1,20 @@
-import type { Metadata } from "next";
-import Navbar from "./components/Navbar";
-
-import localFont from "next/font/local";
 import "./globals.css";
+import React from "react";
 
-const figtree = localFont({
-  src: "./fonts/figtree-latin.woff2",
-  weight: "400 700",
-  variable: "--font-figtree",
-  display: "swap",
-});
-
-export const metadata: Metadata = {
-  title: "Misconception",
-  description: "Understand your mistakes. Strengthen your math.",
+export const metadata = {
+  title: "Unified Math Platform",
+  description: "Adaptive Math ELO Platform",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      className={`${figtree.variable} h-full antialiased`}
-    >
-      <body className="min-h-full">
-        <Navbar />
-        <div className="min-h-screen pb-20 md:pl-20 md:pb-0 xl:pl-64">
-          {children}
-        </div>
+    <html lang="en">
+      <body className="bg-neutral-950 text-neutral-100 antialiased">
+        {children}
       </body>
     </html>
   );
